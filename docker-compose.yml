@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  web:
+    container_name: whb-web
+    image: node:18.4
+    volumes:
+      - ../frontend:/opt/
+    # command: /bin/sh -c "npm install -g npm@latest && npm install && bash"
+    stdin_open: true # equivalent of docker -i
+    tty: true        # equivalent of docker -t
+    ports:
+      - "4200:4200"
+
+  api:
+    container_name: whb-api
+    image: python
+    volumes:
+      - ../backend:/opt/
+    # command: /bin/sh -c "npm install -g npm@latest && npm install && bash"
+    stdin_open: true # equivalent of docker -i
+    tty: true        # equivalent of docker -t
+    ports:
+      - "8080:8080"
+
+  database:
+    container_name: whb-db
+    image: mongo
+    volumes:
+      - ../database:/opt/
+    # command: /bin/sh -c "npm install -g npm@latest && npm install && bash"
+    stdin_open: true # equivalent of docker -i
+    tty: true        # equivalent of docker -t
+    ports:
+      - "27017:27017"
