@@ -1,34 +1,63 @@
+## ref
+# https://medium.com/profusion-engineering/providing-an-equal-development-environment-with-docker-for-all-developers-99ee1d013a31
+
 version: '3.8'
 services:
   web:
-    container_name: whb-web
-    image: node:18.4
+    container_name: wquote-web
+    image: node:18.13
+    expose:
+      - 4200
+    ports:
+      - 4201:4200
     volumes:
       - ../frontend:/opt/
-    # command: /bin/sh -c "npm install -g npm@latest && npm install && bash"
+    networks:
+      - frontend
+    working_dir: /opt
+    command: /bin/sh -c "npm install -g npm@latest && npm install -g @angular/cli && bash"
     stdin_open: true # equivalent of docker -i
     tty: true        # equivalent of docker -t
-    ports:
-      - "4200:4200"
+    depends_on: 
+      - api
+      - database
 
   api:
-    container_name: whb-api
-    image: python
+    container_name: wquote-api
+    image: python:3.11
+    ports:
+      - 8080:5000
     volumes:
-      - ../backend:/opt/
-    # command: /bin/sh -c "npm install -g npm@latest && npm install && bash"
+      - ../backend:/opt
+    networks:
+      - frontend
+      - backend
+    working_dir: /opt
+    command: /bin/sh -c "pip install --upgrade pip && pip install -r requirements.txt && bash"
     stdin_open: true # equivalent of docker -i
     tty: true        # equivalent of docker -t
-    ports:
-      - "8080:8080"
+    depends_on: 
+      - database
 
   database:
-    container_name: whb-db
-    image: mongo
+    container_name: wquote-db
+    image: mongo:6.0
+    ports:
+      - 27017:27017
     volumes:
-      - ../database:/opt/
+      # - ../database:/data/db
+      - data:/data/db
+    networks:
+      - backend
     # command: /bin/sh -c "npm install -g npm@latest && npm install && bash"
     stdin_open: true # equivalent of docker -i
     tty: true        # equivalent of docker -t
-    ports:
-      - "27017:27017"
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+  data:
