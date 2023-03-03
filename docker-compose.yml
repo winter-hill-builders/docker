@@ -26,7 +26,7 @@ services:
     container_name: wquote-api
     image: python:3.11
     ports:
-      - 8080:8000
+      - 8000:8000
     volumes:
       - ../backend:/opt
     networks:
@@ -41,12 +41,12 @@ services:
 
   database:
     container_name: wquote-db
-    image: mongo:6.0
+    image: mongo:5.0
     ports:
       - 27017:27017
     volumes:
-      # - ../database:/data/db
-      - data:/data/db
+      - dbdata:/data/db
+      - dbconfig:/data/configdb
     networks:
       - backend
     # command: /bin/sh -c "npm install -g npm@latest && npm install && bash"
@@ -60,4 +60,5 @@ networks:
     driver: bridge
 
 volumes:
-  data:
+  dbdata:
+  dbconfig:
