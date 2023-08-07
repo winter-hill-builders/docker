@@ -24,7 +24,7 @@ services:
 
   api:
     container_name: wquote-api
-    image: python:3.11
+    image: python:3.11.4
     ports:
       - 80:8000
     volumes:
@@ -41,7 +41,7 @@ services:
 
   database:
     container_name: wquote-db
-    image: mongo:5.0
+    image: mongo:6.0.8
     ports:
       - 27017:27017
     volumes:
