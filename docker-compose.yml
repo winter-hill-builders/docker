@@ -15,18 +15,20 @@ services:
     networks:
       - frontend
     working_dir: /opt
-    command: /bin/sh -c "npm install -g npm@latest && npm install -g @angular/cli && bash"
+    command: /bin/sh -c "npm install -g npm && npm install -g @angular/cli && bash"
     stdin_open: true # equivalent of docker -i
     tty: true        # equivalent of docker -t
     depends_on: 
       - api
       - database
+    copy:
+      - ~/.ssh/id_rsa_github:/root/.ssh/id_rsa  
 
   api:
     container_name: wquote-api
     image: python:3.11.4
     ports:
-      - 80:8000
+      - 8001:8000
     volumes:
       - ../backend:/opt
     networks:
@@ -38,6 +40,8 @@ services:
     tty: true        # equivalent of docker -t
     depends_on: 
       - database
+    copy:
+      - ~/.ssh/id_rsa_github:/root/.ssh/id_rsa
 
   database:
     container_name: wquote-db
