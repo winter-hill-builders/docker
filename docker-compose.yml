@@ -12,8 +12,6 @@ services:
       - 4201:4200
     volumes:
       - ../frontend:/opt/
-    networks:
-      - frontend
     working_dir: /opt
     command: /bin/sh -c "npm install -g npm && npm install -g @angular/cli && bash"
     stdin_open: true # equivalent of docker -i
@@ -21,27 +19,31 @@ services:
     depends_on: 
       - api
       - database
-    copy:
-      - ~/.ssh/id_rsa_github:/root/.ssh/id_rsa  
 
   api:
     container_name: wquote-api
-    image: python:3.11.4
+    image: python:3.11
     ports:
       - 8001:8000
     volumes:
       - ../backend:/opt
-    networks:
-      - frontend
-      - backend
     working_dir: /opt
-    command: /bin/sh -c "pip install --upgrade pip && pip install -r requirements.txt && bash"
+    command: /bin/sh -c "pip install --upgrade pip && pip install -r requirements.txt && tail -f /dev/null"
     stdin_open: true # equivalent of docker -i
     tty: true        # equivalent of docker -t
-    depends_on: 
-      - database
-    copy:
-      - ~/.ssh/id_rsa_github:/root/.ssh/id_rsa
+
+  nestjs:
+    container_name: wquote-nestjs
+    image: node:18
+    ports:
+      - 3000:3000
+    volumes:
+      - ../backend.nestjs:/opt/app
+    working_dir: /opt/app
+    command: /bin/sh -c "npm install -g npm && npm install && bash"
+    stdin_open: true # equivalent of docker -i
+    tty: true        # equivalent of docker -t
+
 
   database:
     container_name: wquote-db
@@ -51,17 +53,10 @@ services:
     volumes:
       - dbdata:/data/db
       - dbconfig:/data/configdb
-    networks:
-      - backend
     # command: /bin/sh -c "npm install -g npm@latest && npm install && bash"
     stdin_open: true # equivalent of docker -i
     tty: true        # equivalent of docker -t
 
-networks:
-  frontend:
-    driver: bridge
-  backend:
-    driver: bridge
 
 volumes:
   dbdata:
