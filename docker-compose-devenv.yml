@@ -1,7 +1,6 @@
 ## ref
 # https://medium.com/profusion-engineering/providing-an-equal-development-environment-with-docker-for-all-developers-99ee1d013a31
 
-version: '3.8'
 services:
   web:
     container_name: wquote-devenv-web
