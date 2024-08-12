@@ -1,0 +1,17 @@
+# Use the official Python image as the base image
+FROM python:3.11
+
+# Create a new user named 'python'
+RUN useradd -ms /bin/bash python
+
+# Set the user to 'python'
+USER python
+
+# Set the working directory
+WORKDIR /opt
+
+# Install pip dependencies
+RUN pip install --upgrade pip
+
+# Keep the container running
+CMD ["/bin/sh", "-c", "tail -f /dev/null"]
