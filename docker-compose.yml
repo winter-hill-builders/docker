@@ -14,48 +14,34 @@ services:
     working_dir: /opt
     command: /bin/sh -c "npm install -g npm && npm install -g @angular/cli && bash"
     stdin_open: true # equivalent of docker -i
-    tty: true        # equivalent of docker -t
-    depends_on: 
+    tty: true # equivalent of docker -t
+    depends_on:
       - api
       - database
 
   api:
     container_name: wquote-api
-    image: python:3.11
+    build:
+      context: .
+      dockerfile: Dockerfile.python
     ports:
       - 8001:8000
     volumes:
       - ../backend:/opt
     working_dir: /opt
-    command: /bin/sh -c "pip install --upgrade pip && pip install -r requirements.txt && tail -f /dev/null"
     stdin_open: true # equivalent of docker -i
-    tty: true        # equivalent of docker -t
-
-  nestjs:
-    container_name: wquote-nestjs
-    image: node:18
-    ports:
-      - 3000:3000
-    volumes:
-      - ../backend.nestjs:/opt/app
-    working_dir: /opt/app
-    command: /bin/sh -c "npm install -g npm && npm install && bash"
-    stdin_open: true # equivalent of docker -i
-    tty: true        # equivalent of docker -t
-
+    tty: true # equivalent of docker -t
 
   database:
     container_name: wquote-db
-    image: mongo:6.0.8
+    image: mongo:7.0.12
     ports:
       - 27017:27017
     volumes:
       - dbdata:/data/db
       - dbconfig:/data/configdb
-    # command: /bin/sh -c "npm install -g npm@latest && npm install && bash"
     stdin_open: true # equivalent of docker -i
-    tty: true        # equivalent of docker -t
-
+    tty: true # equivalent of docker -t
 
 volumes:
   dbdata:
